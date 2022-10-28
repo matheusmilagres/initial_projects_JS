@@ -1,0 +1,135 @@
+import * as React from 'react';
+import {Text, View, StyleSheet, TextInput } from 'react-native';
+import Constants from 'expo-constants';
+
+// or any pure javascript modules available in npm
+import { Button } from 'react-native-paper';
+
+export default class App extends React.Component {
+  //variáveis globais: variaveis que estao no contexto do app
+  state = {
+    peso: 0,
+    altura: 0,
+    imc: '-',
+    legenda: 'Indeterminado'
+  };
+
+  calcularIMC = () => {
+    const resultadoIMC = this.state.peso / (this.state.altura ** 2);
+    
+    this.setState({
+      imc: Math.ceil(resultadoIMC)
+    });
+
+    if (resultadoIMC<18.5) {
+      this.setState({
+        legenda:'Magreza'
+      });
+    } else if (resultadoIMC >= 18.5 && resultadoIMC < 25) {
+      this.setState({
+        legenda:'Normal'
+      });
+    } else if (resultadoIMC >= 25 && resultadoIMC < 30) {
+      this.setState({
+        legenda:'Sobrepeso'
+      });
+    } else if (resultadoIMC >= 30 && resultadoIMC < 40) {
+      this.setState({
+        legenda:'Obesidade'
+      });
+    } else if (resultadoIMC >= 40) {
+      this.setState({
+        legenda:'Obesidade grave'
+      });
+    }
+  }
+
+render(){
+    return (
+      <View style={styles.app}>
+        <Text style={styles.legenda}>
+          Seu IMC
+        </Text>
+
+        <View style={styles.resultado}>
+          <Text style={styles.resultadoIMC_style}>{this.state.imc}</Text>
+          <Text style={styles.diagnostico}>{this.state.legenda}</Text>
+        </View>
+
+        <View style={styles.entradaTexto}>
+          <TextInput 
+            label='Peso' 
+            placeholder='peso (kg)'
+            mode='outlined'
+            onChangeText={valor =>{
+              this.setState({peso: valor.replace(',','.')});
+            }}
+          />
+          <TextInput 
+            label='Altura' 
+            placeholder='altura (m)'
+            mode='outlined'
+            onChangeText={valor =>{
+              this.setState({altura: valor.replace(',','.')});
+            }}
+          />
+        </View>
+          <Button mode='contained' style={styles.styleBotao} onPress={this.calcularIMC}>
+          Calcular
+          </Button>
+        <Text style={styles.own}>
+          by Matheus M. Vieira
+        </Text>
+      </View>
+    );
+  };
+}
+
+//... Estilos
+const styles = StyleSheet.create({
+  app:{
+    padding: 60,
+  },
+
+  legenda:{
+    paddingBottom:10,
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  
+  resultado:{
+    paddingVertical: 5,
+    borderRadius:10,
+    width:140,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    backgroundColor: 'green',
+    alignSelf:'center',
+  },
+
+  resultadoIMC_style:{
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+
+  diagnostico:{
+    fontSize: 16,
+    color: 'white',
+  },
+
+  entradaTexto:{
+    paddingVertical:15,
+  },
+
+  styleBotao:{
+    width:150,
+    alignSelf:'center',
+  },
+    own:{
+    paddingTop:15,
+    paddingLeft:120,
+    fontSize:9,
+  },
+
+});
